@@ -11,8 +11,7 @@ A FastAPI backend with JWT authentication, Role-Based Access Control (RBAC), dat
 - ✅ **Alembic Migrations** with async support
 - ✅ **Rate Limiting** with slowapi
 - ✅ **Docker Compose** for local development
-- ✅ **CI Pipeline** with GitHub Actions (linting, formatting, testing)
-- ✅ **Comprehensive Testing** setup
+- ✅ **CI Pipeline** with GitHub Actions (linting, formatting)
 - ✅ **Optimized Queries** with proper indexing
 - ✅ **No N+1 Problems** with eager loading
 
@@ -29,7 +28,6 @@ A FastAPI backend with JWT authentication, Role-Based Access Control (RBAC), dat
 │   ├── schemas/             # Pydantic schemas
 │   └── main.py              # FastAPI application
 ├── alembic/                 # Database migrations
-├── tests/                   # Test files
 ├── docker-compose.yml       # Local development setup
 ├── Dockerfile               # Container image
 └── requirements.txt         # Python dependencies
@@ -173,12 +171,6 @@ curl -X GET "http://localhost:8000/api/v1/users/me" \
 ```
 
 ## Development
-
-### Running Tests
-
-```bash
-pytest
-```
 
 ### Code Formatting
 

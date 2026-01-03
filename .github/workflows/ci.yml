@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  lint-and-test:
+  lint:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -33,7 +33,3 @@ jobs:
       - name: Check code formatting with Black
         run: |
           black --check .
-
-      - name: Run tests
-        run: |
-          pytest

@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, DateTime, Integer, String
 from sqlalchemy.orm import relationship
 
 from app.db.base import Base
@@ -30,4 +30,3 @@ class Role(Base):
 
     users = relationship("User", back_populates="role")
     permissions = relationship("Permission", secondary="roles_permissions", back_populates="roles")
-

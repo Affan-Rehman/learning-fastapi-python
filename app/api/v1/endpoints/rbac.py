@@ -1,20 +1,18 @@
-from typing import Optional
-
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
+from starlette.requests import Request
 
-from app.core.dependencies import get_current_user, PermissionChecker
-from app.core.rate_limit import limiter, get_rate_limit_config
-from app.crud.rbac_service import get_roles, get_permissions
+from app.core.dependencies import PermissionChecker
+from app.core.rate_limit import get_rate_limit_config, limiter
+from app.crud.rbac_service import get_permissions, get_roles
 from app.db.session import get_db
 from app.models.user import User
 from app.schemas.rbac import (
-    PaginatedRolesResponse,
     PaginatedPermissionsResponse,
-    RoleResponse,
+    PaginatedRolesResponse,
     PermissionResponse,
+    RoleResponse,
 )
-from starlette.requests import Request
 
 router = APIRouter()
 rate_limit_config = get_rate_limit_config()
@@ -26,7 +24,7 @@ async def list_roles(
     request: Request,
     skip: int = Query(0, ge=0),
     limit: int = Query(10, ge=1, le=100),
-    search: Optional[str] = Query(None),
+    search: str | None = Query(None),
     current_user: User = Depends(PermissionChecker("manage_roles")),
     db: AsyncSession = Depends(get_db),
 ):
@@ -64,7 +62,7 @@ async def list_permissions(
     request: Request,
     skip: int = Query(0, ge=0),
     limit: int = Query(10, ge=1, le=100),
-    search: Optional[str] = Query(None),
+    search: str | None = Query(None),
     current_user: User = Depends(PermissionChecker("manage_roles")),
     db: AsyncSession = Depends(get_db),
 ):
@@ -94,4 +92,3 @@ async def list_permissions(
         skip=skip,
         limit=limit,
     )
-

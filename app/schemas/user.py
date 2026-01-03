@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import List, Optional
 
 from pydantic import BaseModel, EmailStr, Field
 
@@ -41,10 +40,10 @@ class UserUpdate(BaseModel):
         role_id: New role ID
     """
 
-    email: Optional[EmailStr] = None
-    username: Optional[str] = Field(None, min_length=3, max_length=50)
-    password: Optional[str] = Field(None, min_length=8)
-    role_id: Optional[int] = None
+    email: EmailStr | None = None
+    username: str | None = Field(None, min_length=3, max_length=50)
+    password: str | None = Field(None, min_length=8)
+    role_id: int | None = None
 
 
 class UserResponse(UserBase):
@@ -61,7 +60,7 @@ class UserResponse(UserBase):
 
     id: int
     role_id: int
-    role: Optional[RoleResponse] = None
+    role: RoleResponse | None = None
     created_at: datetime
     updated_at: datetime
 
@@ -80,8 +79,7 @@ class PaginatedUsersResponse(BaseModel):
         limit: Maximum number of users per page
     """
 
-    items: List[UserResponse]
+    items: list[UserResponse]
     total: int
     skip: int
     limit: int
-

@@ -1,9 +1,8 @@
 import pytest
-from httpx import AsyncClient
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
+from fastapi.testclient import TestClient
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.pool import StaticPool
 
-from app.core.config import settings
 from app.db.base import Base
 from app.db.session import get_db
 from app.main import app
@@ -42,7 +41,7 @@ async def db_session():
 
 
 @pytest.fixture
-async def client(db_session: AsyncSession):
+def client(db_session: AsyncSession):
     """
     Create a test client with database override.
 
@@ -50,15 +49,15 @@ async def client(db_session: AsyncSession):
         db_session: Test database session
 
     Yields:
-        AsyncClient: Test HTTP client
+        TestClient: Test HTTP client
     """
-    async def override_get_db():
+
+    def override_get_db():
         yield db_session
 
     app.dependency_overrides[get_db] = override_get_db
 
-    async with AsyncClient(app=app, base_url="http://test") as ac:
-        yield ac
+    client = TestClient(app)
+    yield client
 
     app.dependency_overrides.clear()
-

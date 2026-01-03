@@ -1,20 +1,18 @@
-from typing import Optional
-
-from fastapi import APIRouter, Depends, HTTPException, status, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
+from starlette.requests import Request
 
-from app.core.dependencies import get_current_user, PermissionChecker
-from app.core.rate_limit import limiter, get_rate_limit_config
+from app.core.dependencies import PermissionChecker, get_current_user
+from app.core.rate_limit import get_rate_limit_config, limiter
 from app.crud.user_service import (
+    delete_user,
     get_user_by_id,
     get_users,
     update_user,
-    delete_user,
 )
 from app.db.session import get_db
 from app.models.user import User
-from app.schemas.user import UserResponse, UserUpdate, PaginatedUsersResponse
-from starlette.requests import Request
+from app.schemas.user import PaginatedUsersResponse, UserResponse, UserUpdate
 
 router = APIRouter()
 rate_limit_config = get_rate_limit_config()
@@ -73,10 +71,10 @@ async def list_users(
     request: Request,
     skip: int = Query(0, ge=0),
     limit: int = Query(10, ge=1, le=100),
-    email: Optional[str] = Query(None),
-    username: Optional[str] = Query(None),
-    role_id: Optional[int] = Query(None),
-    search: Optional[str] = Query(None),
+    email: str | None = Query(None),
+    username: str | None = Query(None),
+    role_id: int | None = Query(None),
+    search: str | None = Query(None),
     sort_by: str = Query("id"),
     order: str = Query("asc"),
     current_user: User = Depends(PermissionChecker("read_user")),
@@ -178,4 +176,3 @@ async def delete_user_endpoint(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found",
         )
-

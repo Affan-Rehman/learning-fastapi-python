@@ -1,6 +1,5 @@
-from pydantic_settings import BaseSettings
-from typing import List
 from pydantic import Field
+from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
@@ -36,7 +35,7 @@ class Settings(BaseSettings):
     DEFAULT_ADMIN_PASSWORD: str = Field(default="")
 
     @property
-    def cors_origins_list(self) -> List[str]:
+    def cors_origins_list(self) -> list[str]:
         return [origin.strip() for origin in self.CORS_ORIGINS.split(",")]
 
     class Config:
@@ -46,4 +45,3 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
-

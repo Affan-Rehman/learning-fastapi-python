@@ -1,5 +1,3 @@
-from typing import Optional
-
 from pydantic import BaseModel, Field, field_validator
 
 
@@ -68,7 +66,7 @@ class SearchParams(BaseModel):
         search: Search query string
     """
 
-    search: Optional[str] = Field(default=None, description="Search query string")
+    search: str | None = Field(default=None, description="Search query string")
 
 
 class UserFilterParams(BaseModel):
@@ -81,7 +79,6 @@ class UserFilterParams(BaseModel):
         role_id: Filter by role ID
     """
 
-    email: Optional[str] = Field(default=None, description="Filter by email address")
-    username: Optional[str] = Field(default=None, description="Filter by username")
-    role_id: Optional[int] = Field(default=None, description="Filter by role ID")
-
+    email: str | None = Field(default=None, description="Filter by email address")
+    username: str | None = Field(default=None, description="Filter by username")
+    role_id: int | None = Field(default=None, description="Filter by role ID")

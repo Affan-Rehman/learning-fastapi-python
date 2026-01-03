@@ -1,16 +1,14 @@
-from typing import Optional
-
-from sqlalchemy import select, func, or_
+from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.core.security import get_password_hash, verify_password
-from app.models.user import User
 from app.models.role import Role
+from app.models.user import User
 from app.schemas.user import UserCreate, UserUpdate
 
 
-async def get_user_by_id(db: AsyncSession, user_id: int) -> Optional[User]:
+async def get_user_by_id(db: AsyncSession, user_id: int) -> User | None:
     """
     Get user by ID with role and permissions loaded.
 
@@ -30,7 +28,7 @@ async def get_user_by_id(db: AsyncSession, user_id: int) -> Optional[User]:
     return result.scalar_one_or_none()
 
 
-async def get_user_by_email(db: AsyncSession, email: str) -> Optional[User]:
+async def get_user_by_email(db: AsyncSession, email: str) -> User | None:
     """
     Get user by email with role and permissions loaded.
 
@@ -50,7 +48,7 @@ async def get_user_by_email(db: AsyncSession, email: str) -> Optional[User]:
     return result.scalar_one_or_none()
 
 
-async def get_user_by_username(db: AsyncSession, username: str) -> Optional[User]:
+async def get_user_by_username(db: AsyncSession, username: str) -> User | None:
     """
     Get user by username with role and permissions loaded.
 
@@ -102,7 +100,7 @@ async def create_user(db: AsyncSession, user_data: UserCreate, role_id: int = 2)
     return result.scalar_one()
 
 
-async def update_user(db: AsyncSession, user_id: int, user_data: UserUpdate) -> Optional[User]:
+async def update_user(db: AsyncSession, user_id: int, user_data: UserUpdate) -> User | None:
     """
     Update user information.
 
@@ -161,10 +159,10 @@ async def get_users(
     db: AsyncSession,
     skip: int = 0,
     limit: int = 10,
-    email: Optional[str] = None,
-    username: Optional[str] = None,
-    role_id: Optional[int] = None,
-    search: Optional[str] = None,
+    email: str | None = None,
+    username: str | None = None,
+    role_id: int | None = None,
+    search: str | None = None,
     sort_by: str = "id",
     order: str = "asc",
 ) -> tuple[list[User], int]:
@@ -187,10 +185,7 @@ async def get_users(
     Returns:
         Tuple of (list of users, total count)
     """
-    stmt = (
-        select(User)
-        .options(selectinload(User.role).selectinload(Role.permissions))
-    )
+    stmt = select(User).options(selectinload(User.role).selectinload(Role.permissions))
 
     if email:
         stmt = stmt.filter(User.email == email)
@@ -223,7 +218,7 @@ async def get_users(
     return list(users), total
 
 
-async def authenticate_user(db: AsyncSession, username: str, password: str) -> Optional[User]:
+async def authenticate_user(db: AsyncSession, username: str, password: str) -> User | None:
     """
     Authenticate user by username/email and password.
 
@@ -246,4 +241,3 @@ async def authenticate_user(db: AsyncSession, username: str, password: str) -> O
         return None
 
     return user
-

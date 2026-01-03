@@ -1,16 +1,13 @@
-from typing import List, Optional
-
 from fastapi import Depends, HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.core.security import decode_access_token
 from app.db.session import get_db
-from app.models.user import User
 from app.models.role import Role
-from app.models.permission import Permission
+from app.models.user import User
 
 security = HTTPBearer()
 
@@ -51,15 +48,15 @@ async def get_current_user(
             detail="Could not validate credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    
+
     try:
         user_id = int(user_id_raw)
-    except (ValueError, TypeError):
+    except (ValueError, TypeError) as err:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials",
             headers={"WWW-Authenticate": "Bearer"},
-        )
+        ) from err
 
     stmt = (
         select(User)
@@ -88,7 +85,7 @@ class PermissionChecker:
         Depends(PermissionChecker(["read_user", "update_user"]))
     """
 
-    def __init__(self, required_permissions: str | List[str]):
+    def __init__(self, required_permissions: str | list[str]):
         """
         Initialize permission checker.
 
@@ -142,7 +139,7 @@ class RoleChecker:
         Depends(RoleChecker(["admin", "moderator"]))
     """
 
-    def __init__(self, allowed_roles: List[str]):
+    def __init__(self, allowed_roles: list[str]):
         """
         Initialize role checker.
 
@@ -180,4 +177,3 @@ class RoleChecker:
             )
 
         return current_user
-

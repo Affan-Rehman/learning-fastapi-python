@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import List, Optional
 
 from pydantic import BaseModel
 
@@ -18,7 +17,7 @@ class PermissionResponse(BaseModel):
 
     id: int
     name: str
-    description: Optional[str]
+    description: str | None
     created_at: datetime
     updated_at: datetime
 
@@ -41,8 +40,8 @@ class RoleResponse(BaseModel):
 
     id: int
     name: str
-    description: Optional[str]
-    permissions: List[PermissionResponse] = []
+    description: str | None
+    permissions: list[PermissionResponse] = []
     created_at: datetime
     updated_at: datetime
 
@@ -61,7 +60,7 @@ class PaginatedRolesResponse(BaseModel):
         limit: Maximum number of roles per page
     """
 
-    items: List[RoleResponse]
+    items: list[RoleResponse]
     total: int
     skip: int
     limit: int
@@ -78,8 +77,7 @@ class PaginatedPermissionsResponse(BaseModel):
         limit: Maximum number of permissions per page
     """
 
-    items: List[PermissionResponse]
+    items: list[PermissionResponse]
     total: int
     skip: int
     limit: int
-

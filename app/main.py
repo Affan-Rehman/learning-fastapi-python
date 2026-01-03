@@ -1,6 +1,6 @@
-from contextlib import asynccontextmanager
 import asyncio
 import logging
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
@@ -13,17 +13,19 @@ from app.core.config import settings
 from app.core.rate_limit import setup_rate_limiting
 from app.db.session import engine
 from app.schemas import (
-    UserResponse,
-    PaginatedUsersResponse,
-    RoleResponse,
-    PaginatedRolesResponse,
-    PermissionResponse,
     PaginatedPermissionsResponse,
+    PaginatedRolesResponse,
+    PaginatedUsersResponse,
+    PermissionResponse,
+    RoleResponse,
+    UserResponse,
 )
 
 logging.basicConfig(
     level=getattr(logging, settings.LOG_LEVEL),
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s" if settings.LOG_FORMAT == "text" else None,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    if settings.LOG_FORMAT == "text"
+    else None,
 )
 
 
@@ -134,4 +136,3 @@ async def root():
         "version": settings.VERSION,
         "docs": "/docs",
     }
-

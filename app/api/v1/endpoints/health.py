@@ -1,9 +1,8 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.session import get_db
-from fastapi import Depends
 
 router = APIRouter()
 
@@ -29,4 +28,3 @@ async def health_check(db: AsyncSession = Depends(get_db)):
         "status": "healthy",
         "database": db_status,
     }
-

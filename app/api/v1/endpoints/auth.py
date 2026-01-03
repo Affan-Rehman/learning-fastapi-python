@@ -4,12 +4,17 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.requests import Request
 
 from app.core.dependencies import get_current_user
-from app.core.rate_limit import limiter, get_rate_limit_config
+from app.core.rate_limit import get_rate_limit_config, limiter
 from app.core.security import create_access_token, validate_password_strength
-from app.crud.user_service import create_user, authenticate_user, get_user_by_email, get_user_by_username
+from app.crud.user_service import (
+    authenticate_user,
+    create_user,
+    get_user_by_email,
+    get_user_by_username,
+)
 from app.db.session import get_db
 from app.models.user import User
-from app.schemas.auth import Token, UserLogin, UserRegister
+from app.schemas.auth import Token, UserRegister
 from app.schemas.user import UserResponse
 
 router = APIRouter()
@@ -109,4 +114,3 @@ async def get_current_user_info(
         Current user information
     """
     return current_user
-

@@ -1,14 +1,12 @@
-from typing import Optional
-
-from sqlalchemy import select, func, or_
+from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from app.models.role import Role
 from app.models.permission import Permission
+from app.models.role import Role
 
 
-async def get_role_by_id(db: AsyncSession, role_id: int) -> Optional[Role]:
+async def get_role_by_id(db: AsyncSession, role_id: int) -> Role | None:
     """
     Get role by ID with permissions loaded.
 
@@ -19,16 +17,12 @@ async def get_role_by_id(db: AsyncSession, role_id: int) -> Optional[Role]:
     Returns:
         Role object with permissions, or None if not found
     """
-    stmt = (
-        select(Role)
-        .options(selectinload(Role.permissions))
-        .filter(Role.id == role_id)
-    )
+    stmt = select(Role).options(selectinload(Role.permissions)).filter(Role.id == role_id)
     result = await db.execute(stmt)
     return result.scalar_one_or_none()
 
 
-async def get_role_by_name(db: AsyncSession, name: str) -> Optional[Role]:
+async def get_role_by_name(db: AsyncSession, name: str) -> Role | None:
     """
     Get role by name with permissions loaded.
 
@@ -39,11 +33,7 @@ async def get_role_by_name(db: AsyncSession, name: str) -> Optional[Role]:
     Returns:
         Role object with permissions, or None if not found
     """
-    stmt = (
-        select(Role)
-        .options(selectinload(Role.permissions))
-        .filter(Role.name == name)
-    )
+    stmt = select(Role).options(selectinload(Role.permissions)).filter(Role.name == name)
     result = await db.execute(stmt)
     return result.scalar_one_or_none()
 
@@ -52,7 +42,7 @@ async def get_roles(
     db: AsyncSession,
     skip: int = 0,
     limit: int = 10,
-    search: Optional[str] = None,
+    search: str | None = None,
 ) -> tuple[list[Role], int]:
     """
     Get paginated list of roles with search.
@@ -87,7 +77,7 @@ async def get_roles(
     return list(roles), total
 
 
-async def get_permission_by_id(db: AsyncSession, permission_id: int) -> Optional[Permission]:
+async def get_permission_by_id(db: AsyncSession, permission_id: int) -> Permission | None:
     """
     Get permission by ID.
 
@@ -103,7 +93,7 @@ async def get_permission_by_id(db: AsyncSession, permission_id: int) -> Optional
     return result.scalar_one_or_none()
 
 
-async def get_permission_by_name(db: AsyncSession, name: str) -> Optional[Permission]:
+async def get_permission_by_name(db: AsyncSession, name: str) -> Permission | None:
     """
     Get permission by name.
 
@@ -123,7 +113,7 @@ async def get_permissions(
     db: AsyncSession,
     skip: int = 0,
     limit: int = 10,
-    search: Optional[str] = None,
+    search: str | None = None,
 ) -> tuple[list[Permission], int]:
     """
     Get paginated list of permissions with search.
@@ -156,4 +146,3 @@ async def get_permissions(
     permissions = result.scalars().all()
 
     return list(permissions), total
-

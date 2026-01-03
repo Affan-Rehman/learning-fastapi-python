@@ -1,18 +1,18 @@
+from app.schemas.auth import Token, UserLogin, UserRegister
+from app.schemas.common import PaginatedResponse
+from app.schemas.rbac import (
+    PaginatedPermissionsResponse,
+    PaginatedRolesResponse,
+    PermissionResponse,
+    RoleResponse,
+)
 from app.schemas.user import (
+    PaginatedUsersResponse,
     UserBase,
     UserCreate,
-    UserUpdate,
     UserResponse,
-    PaginatedUsersResponse,
+    UserUpdate,
 )
-from app.schemas.auth import Token, UserLogin, UserRegister
-from app.schemas.rbac import (
-    RoleResponse,
-    PermissionResponse,
-    PaginatedRolesResponse,
-    PaginatedPermissionsResponse,
-)
-from app.schemas.common import PaginatedResponse
 
 __all__ = [
     "UserBase",
@@ -29,4 +29,3 @@ __all__ = [
     "PaginatedPermissionsResponse",
     "PaginatedResponse",
 ]
-

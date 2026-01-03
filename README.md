@@ -1,6 +1,6 @@
 # FastAPI Backend with RBAC
 
-A production-ready FastAPI backend with JWT authentication, Role-Based Access Control (RBAC), database migrations, Docker setup, and CI/CD pipeline.
+A FastAPI backend with JWT authentication, Role-Based Access Control (RBAC), database migrations, and Docker setup for local development.
 
 ## Features
 
@@ -11,8 +11,7 @@ A production-ready FastAPI backend with JWT authentication, Role-Based Access Co
 - ✅ **Alembic Migrations** with async support
 - ✅ **Rate Limiting** with slowapi
 - ✅ **Docker Compose** for local development
-- ✅ **Google Cloud Deployment** ready
-- ✅ **CI/CD Pipeline** with GitHub Actions
+- ✅ **CI Pipeline** with GitHub Actions (linting, formatting, testing)
 - ✅ **Comprehensive Testing** setup
 - ✅ **Optimized Queries** with proper indexing
 - ✅ **No N+1 Problems** with eager loading
@@ -32,8 +31,7 @@ A production-ready FastAPI backend with JWT authentication, Role-Based Access Co
 ├── alembic/                 # Database migrations
 ├── tests/                   # Test files
 ├── docker-compose.yml       # Local development setup
-├── Dockerfile               # Production container
-├── deploy.sh                # GCloud deployment script
+├── Dockerfile               # Container image
 └── requirements.txt         # Python dependencies
 ```
 
@@ -63,7 +61,6 @@ Edit `.env` and update the following:
 - Generate a secret key: `openssl rand -hex 32`
 - Update `DATABASE_URL` if needed
 - Configure CORS origins for your frontend
-- Set GCP variables if deploying
 
 ### 3. Start Database
 
@@ -222,34 +219,6 @@ docker-compose logs -f
 docker-compose down
 ```
 
-## Google Cloud Deployment
-
-### Prerequisites
-
-- Google Cloud SDK installed
-- GCP project created
-- Required APIs enabled:
-  - Cloud Run API
-  - Container Registry API
-  - Cloud SQL API (if using Cloud SQL)
-
-### Manual Deployment
-
-```bash
-./deploy.sh
-```
-
-### CI/CD Deployment
-
-The GitHub Actions workflow automatically deploys on push to `main` branch.
-
-Required GitHub Secrets:
-
-- `GCP_SA_KEY`: Service account JSON key
-- `GCP_PROJECT_ID`: GCP project ID
-- `GCP_REGION`: Deployment region
-- `ENV_VARS`: Environment variables (comma-separated)
-
 ## Environment Variables
 
 See `.env.example` for all required variables. Key variables:
@@ -258,7 +227,6 @@ See `.env.example` for all required variables. Key variables:
 - `SECRET_KEY`: JWT secret key (generate with `openssl rand -hex 32`)
 - `CORS_ORIGINS`: Allowed frontend origins
 - `RATE_LIMIT_*`: Rate limiting configuration
-- `GCP_*`: Google Cloud Platform settings
 
 ## Database
 

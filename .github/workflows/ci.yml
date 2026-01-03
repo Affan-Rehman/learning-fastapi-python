@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: CI Pipeline
 
 on:
   push:
@@ -37,54 +37,3 @@ jobs:
       - name: Run tests
         run: |
           pytest
-
-  deploy:
-    needs: lint-and-test
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v1
-        with:
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
-
-      - name: Configure Docker for GCR
-        run: gcloud auth configure-docker --quiet
-
-      - name: Build Docker image
-        run: |
-          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/fastapi-backend:${{ github.sha }} .
-          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/fastapi-backend:latest .
-
-      - name: Push Docker image
-        run: |
-          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/fastapi-backend:${{ github.sha }}
-          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/fastapi-backend:latest
-
-      - name: Deploy to Cloud Run
-        run: |
-          gcloud run deploy fastapi-backend \
-            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/fastapi-backend:${{ github.sha }} \
-            --platform managed \
-            --region ${{ secrets.GCP_REGION }} \
-            --allow-unauthenticated \
-            --set-env-vars "${{ secrets.ENV_VARS }}" \
-            --memory 512Mi \
-            --cpu 1 \
-            --timeout 300 \
-            --max-instances 10
-
-      - name: Run database migrations
-        run: |
-          gcloud run jobs create migrate-fastapi-backend \
-            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/fastapi-backend:${{ github.sha }} \
-            --region ${{ secrets.GCP_REGION }} \
-            --command alembic \
-            --args upgrade,head \
-            --set-env-vars "${{ secrets.ENV_VARS }}" \
-            || echo "Migration job already exists"
-          gcloud run jobs execute migrate-fastapi-backend --region ${{ secrets.GCP_REGION }}

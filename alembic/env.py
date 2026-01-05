@@ -6,8 +6,13 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
+
 from app.core.config import settings
 from app.db.base import Base
+
+# Import all models so they're registered with Base.metadata
+from app.rbac.models import Permission, Role, roles_permissions  # noqa: F401
+from app.users.models import User  # noqa: F401
 
 config = context.config
 

@@ -3,19 +3,15 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.requests import Request
 
-from app.core.dependencies import get_current_user
+from app.auth.dependencies import get_current_user
+from app.auth.schemas import Token, UserRegister
+from app.auth.service import authenticate_user, create_user
 from app.core.rate_limit import get_rate_limit_config, limiter
 from app.core.security import create_access_token, validate_password_strength
-from app.crud.user_service import (
-    authenticate_user,
-    create_user,
-    get_user_by_email,
-    get_user_by_username,
-)
 from app.db.session import get_db
-from app.models.user import User
-from app.schemas.auth import Token, UserRegister
-from app.schemas.user import UserResponse
+from app.users.models import User
+from app.users.service import get_user_by_email, get_user_by_username
+from app.users.schemas import UserResponse
 
 router = APIRouter()
 rate_limit_config = get_rate_limit_config()
@@ -114,3 +110,4 @@ async def get_current_user_info(
         Current user information
     """
     return current_user
+

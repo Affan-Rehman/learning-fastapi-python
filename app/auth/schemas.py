@@ -40,3 +40,4 @@ class UserRegister(BaseModel):
     email: str
     username: str
     password: str
+

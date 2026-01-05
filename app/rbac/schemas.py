@@ -81,3 +81,4 @@ class PaginatedPermissionsResponse(BaseModel):
     total: int
     skip: int
     limit: int
+

@@ -2,17 +2,13 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.requests import Request
 
-from app.core.dependencies import PermissionChecker, get_current_user
+from app.auth.dependencies import get_current_user
+from app.core.dependencies import PermissionChecker
 from app.core.rate_limit import get_rate_limit_config, limiter
-from app.crud.user_service import (
-    delete_user,
-    get_user_by_id,
-    get_users,
-    update_user,
-)
 from app.db.session import get_db
-from app.models.user import User
-from app.schemas.user import PaginatedUsersResponse, UserResponse, UserUpdate
+from app.users.models import User
+from app.users.schemas import PaginatedUsersResponse, UserResponse, UserUpdate
+from app.users.service import delete_user, get_user_by_id, get_users, update_user
 
 router = APIRouter()
 rate_limit_config = get_rate_limit_config()
@@ -176,3 +172,4 @@ async def delete_user_endpoint(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found",
         )
+

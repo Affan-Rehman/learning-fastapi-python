@@ -32,3 +32,4 @@ class User(Base):
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
 
     role = relationship("Role", back_populates="users")
+

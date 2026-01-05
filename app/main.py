@@ -2,24 +2,29 @@ import asyncio
 import logging
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, Request, status
+from fastapi import APIRouter, Depends, FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.v1.router import api_router
+from app.db.session import get_db
+
+from app.auth.router import router as auth_router
 from app.core.config import settings
 from app.core.rate_limit import setup_rate_limiting
 from app.db.session import engine
-from app.schemas import (
+from app.mail.router import router as mail_router
+from app.rbac.router import router as rbac_router
+from app.rbac.schemas import (
     PaginatedPermissionsResponse,
     PaginatedRolesResponse,
-    PaginatedUsersResponse,
     PermissionResponse,
     RoleResponse,
-    UserResponse,
 )
+from app.users.router import router as users_router
+from app.users.schemas import PaginatedUsersResponse, UserResponse
 
 logging.basicConfig(
     level=getattr(logging, settings.LOG_LEVEL),
@@ -83,7 +88,40 @@ for model in [
 ]:
     model.model_rebuild()
 
-app.include_router(api_router, prefix=settings.API_V1_PREFIX)
+# Include feature routers
+app.include_router(auth_router, prefix=f"{settings.API_V1_PREFIX}/auth", tags=["auth"])
+app.include_router(users_router, prefix=f"{settings.API_V1_PREFIX}/users", tags=["users"])
+app.include_router(rbac_router, prefix=f"{settings.API_V1_PREFIX}/rbac", tags=["rbac"])
+app.include_router(mail_router, prefix=f"{settings.API_V1_PREFIX}/mail", tags=["mail"])
+
+# Health check endpoint
+health_router = APIRouter()
+
+
+@health_router.get("/health")
+async def health_check(db: AsyncSession = Depends(get_db)):
+    """
+    Health check endpoint to verify service and database connectivity.
+
+    Args:
+        db: Database session
+
+    Returns:
+        Health status with database connection status
+    """
+    try:
+        await db.execute(text("SELECT 1"))
+        db_status = "connected"
+    except Exception:
+        db_status = "disconnected"
+
+    return {
+        "status": "healthy",
+        "database": db_status,
+    }
+
+
+app.include_router(health_router, prefix=f"{settings.API_V1_PREFIX}/health", tags=["health"])
 
 
 @app.exception_handler(RequestValidationError)

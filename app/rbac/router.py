@@ -4,15 +4,15 @@ from starlette.requests import Request
 
 from app.core.dependencies import PermissionChecker
 from app.core.rate_limit import get_rate_limit_config, limiter
-from app.crud.rbac_service import get_permissions, get_roles
 from app.db.session import get_db
-from app.models.user import User
-from app.schemas.rbac import (
+from app.rbac.schemas import (
     PaginatedPermissionsResponse,
     PaginatedRolesResponse,
     PermissionResponse,
     RoleResponse,
 )
+from app.rbac.service import get_permissions, get_roles
+from app.users.models import User
 
 router = APIRouter()
 rate_limit_config = get_rate_limit_config()
@@ -92,3 +92,4 @@ async def list_permissions(
         skip=skip,
         limit=limit,
     )
+

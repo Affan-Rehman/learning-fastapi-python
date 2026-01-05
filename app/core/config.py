@@ -17,7 +17,9 @@ class Settings(BaseSettings):
 
     SECRET_KEY: str
     ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    ACCESS_TOKEN_EXPIRE_MINUTES: int
+    PASSWORD_RESET_TOKEN_EXPIRE_MINUTES: int
+    FRONTEND_URL: str
 
     CORS_ORIGINS: str
 
@@ -33,6 +35,19 @@ class Settings(BaseSettings):
     DEFAULT_ADMIN_EMAIL: str = Field(default="")
     DEFAULT_ADMIN_USERNAME: str = Field(default="")
     DEFAULT_ADMIN_PASSWORD: str = Field(default="")
+
+    # Mail settings
+    MAIL_USERNAME: str = Field(default="")
+    MAIL_PASSWORD: str = Field(default="")
+    MAIL_FROM: str = Field(default="")
+    MAIL_PORT: int = Field(default=587)
+    MAIL_SERVER: str = Field(default="")
+    MAIL_FROM_NAME: str = Field(default="")
+    MAIL_STARTTLS: bool = Field(default=True)
+    MAIL_SSL_TLS: bool = Field(default=False)
+    MAIL_USE_CREDENTIALS: bool = Field(default=True)
+    MAIL_VALIDATE_CERTS: bool = Field(default=True)
+    MAIL_TEMPLATE_FOLDER: str | None = Field(default=None)
 
     @property
     def cors_origins_list(self) -> list[str]:

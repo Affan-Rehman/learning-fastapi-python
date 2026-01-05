@@ -2,7 +2,7 @@ from datetime import datetime
 
 from pydantic import BaseModel, EmailStr, Field
 
-from app.schemas.rbac import RoleResponse
+from app.rbac.schemas import RoleResponse
 
 
 class UserBase(BaseModel):
@@ -83,3 +83,4 @@ class PaginatedUsersResponse(BaseModel):
     total: int
     skip: int
     limit: int
+

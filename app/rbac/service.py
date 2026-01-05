@@ -2,8 +2,7 @@ from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from app.models.permission import Permission
-from app.models.role import Role
+from app.rbac.models import Permission, Role
 
 
 async def get_role_by_id(db: AsyncSession, role_id: int) -> Role | None:
@@ -146,3 +145,4 @@ async def get_permissions(
     permissions = result.scalars().all()
 
     return list(permissions), total
+

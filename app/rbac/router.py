@@ -92,4 +92,3 @@ async def list_permissions(
         skip=skip,
         limit=limit,
     )
-

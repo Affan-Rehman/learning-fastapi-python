@@ -172,4 +172,3 @@ async def delete_user_endpoint(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found",
         )
-

@@ -145,4 +145,3 @@ async def get_permissions(
     permissions = result.scalars().all()
 
     return list(permissions), total
-

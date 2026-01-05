@@ -12,8 +12,8 @@ from app.core.security import (
 from app.mail.service import send_email_with_template
 from app.rbac.models import Role
 from app.users.models import User
-from app.users.service import get_user_by_email, get_user_by_id, get_user_by_username
 from app.users.schemas import UserCreate
+from app.users.service import get_user_by_email, get_user_by_id, get_user_by_username
 
 
 async def authenticate_user(db: AsyncSession, username: str, password: str) -> User | None:
@@ -220,4 +220,3 @@ async def change_password(
     )
 
     return updated_user
-

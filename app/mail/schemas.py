@@ -1,4 +1,4 @@
-from typing import Any, Dict, List
+from typing import Any
 
 from pydantic import BaseModel, EmailStr
 
@@ -12,8 +12,8 @@ class EmailSchema(BaseModel):
         body: Optional body content (for template-based emails)
     """
 
-    email: List[EmailStr]
-    body: Dict[str, Any] | None = None
+    email: list[EmailStr]
+    body: dict[str, Any] | None = None
 
 
 class EmailWithTemplateSchema(BaseModel):
@@ -26,9 +26,9 @@ class EmailWithTemplateSchema(BaseModel):
         body: Template variables as dictionary
     """
 
-    email: List[EmailStr]
+    email: list[EmailStr]
     template_name: str
-    body: Dict[str, Any]
+    body: dict[str, Any]
 
 
 class EmailWithAttachmentSchema(BaseModel):
@@ -41,7 +41,7 @@ class EmailWithAttachmentSchema(BaseModel):
         body: Email body (HTML or plain text)
     """
 
-    email: List[EmailStr]
+    email: list[EmailStr]
     subject: str
     body: str
 
@@ -57,7 +57,7 @@ class EmailMultipartSchema(BaseModel):
         plain_text_body: Plain text content
     """
 
-    email: List[EmailStr]
+    email: list[EmailStr]
     subject: str
     html_body: str
     plain_text_body: str
@@ -71,5 +71,4 @@ class BulkEmailSchema(BaseModel):
         emails: List of email schemas to send
     """
 
-    emails: List[EmailSchema]
-
+    emails: list[EmailSchema]

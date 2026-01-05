@@ -1,5 +1,3 @@
-from typing import List
-
 from fastapi import BackgroundTasks
 from fastapi_mail import FastMail, MessageSchema, MessageType, MultipartSubtypeEnum
 
@@ -10,11 +8,11 @@ fm = FastMail(mail_config)
 
 
 async def send_email(
-    recipients: List[str],
+    recipients: list[str],
     subject: str,
     body: str,
     subtype: MessageType = MessageType.html,
-    attachments: List | None = None,
+    attachments: list | None = None,
 ) -> bool:
     """
     Send a standard email.
@@ -54,11 +52,11 @@ async def send_email(
 
 async def send_email_background(
     background_tasks: BackgroundTasks,
-    recipients: List[str],
+    recipients: list[str],
     subject: str,
     body: str,
     subtype: MessageType = MessageType.html,
-    attachments: List | None = None,
+    attachments: list | None = None,
 ) -> bool:
     """
     Send email as a background task (non-blocking).
@@ -102,7 +100,7 @@ async def send_email_background(
 
 
 async def send_email_with_template(
-    recipients: List[str],
+    recipients: list[str],
     subject: str,
     template_name: str,
     template_body: dict,
@@ -151,10 +149,10 @@ async def send_email_with_template(
 
 
 async def send_email_with_attachments(
-    recipients: List[str],
+    recipients: list[str],
     subject: str,
     body: str,
-    attachments: List,
+    attachments: list,
     subtype: MessageType = MessageType.html,
 ) -> bool:
     """
@@ -211,7 +209,7 @@ async def send_email_with_attachments(
 
 
 async def send_multipart_email(
-    recipients: List[str],
+    recipients: list[str],
     subject: str,
     html_body: str,
     plain_text_body: str,
@@ -252,7 +250,7 @@ async def send_multipart_email(
     return True
 
 
-async def send_bulk_emails(messages: List[MessageSchema]) -> bool:
+async def send_bulk_emails(messages: list[MessageSchema]) -> bool:
     """
     Send multiple emails using a single SMTP connection.
 
@@ -367,4 +365,3 @@ set via environment variables:
 
 ================================================================================
 """
-

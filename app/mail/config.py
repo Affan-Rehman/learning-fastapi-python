@@ -29,7 +29,7 @@ def get_mail_config() -> ConnectionConfig:
         )
 
     template_folder = Path(__file__).parent / "templates"
-    
+
     config = ConnectionConfig(
         MAIL_USERNAME=settings.MAIL_USERNAME,
         MAIL_PASSWORD=settings.MAIL_PASSWORD,
@@ -41,11 +41,12 @@ def get_mail_config() -> ConnectionConfig:
         MAIL_SSL_TLS=settings.MAIL_SSL_TLS,
         USE_CREDENTIALS=settings.MAIL_USE_CREDENTIALS,
         VALIDATE_CERTS=settings.MAIL_VALIDATE_CERTS,
-        TEMPLATE_FOLDER=template_folder if template_folder.exists() else (Path(settings.MAIL_TEMPLATE_FOLDER) if settings.MAIL_TEMPLATE_FOLDER else None),
+        TEMPLATE_FOLDER=template_folder
+        if template_folder.exists()
+        else (Path(settings.MAIL_TEMPLATE_FOLDER) if settings.MAIL_TEMPLATE_FOLDER else None),
     )
 
     return config
 
 
 mail_config = get_mail_config()
-

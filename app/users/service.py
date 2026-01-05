@@ -184,4 +184,3 @@ async def get_users(
     users = result.scalars().all()
 
     return list(users), total
-

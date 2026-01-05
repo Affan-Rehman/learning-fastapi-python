@@ -23,8 +23,8 @@ from app.core.rate_limit import get_rate_limit_config, limiter
 from app.core.security import create_access_token, validate_password_strength
 from app.db.session import get_db
 from app.users.models import User
-from app.users.service import get_user_by_email, get_user_by_username
 from app.users.schemas import UserResponse
+from app.users.service import get_user_by_email, get_user_by_username
 
 router = APIRouter()
 rate_limit_config = get_rate_limit_config()
@@ -125,7 +125,9 @@ async def get_current_user_info(
     return current_user
 
 
-@router.post("/forgot-password", response_model=PasswordResetResponse, status_code=status.HTTP_200_OK)
+@router.post(
+    "/forgot-password", response_model=PasswordResetResponse, status_code=status.HTTP_200_OK
+)
 @limiter.limit(rate_limit_config["auth_endpoints"])
 async def forgot_password(
     request: Request,
@@ -164,7 +166,9 @@ async def forgot_password(
     )
 
 
-@router.post("/reset-password", response_model=PasswordResetResponse, status_code=status.HTTP_200_OK)
+@router.post(
+    "/reset-password", response_model=PasswordResetResponse, status_code=status.HTTP_200_OK
+)
 @limiter.limit(rate_limit_config["auth_endpoints"])
 async def reset_password_endpoint(
     request: Request,
@@ -205,22 +209,24 @@ async def reset_password_endpoint(
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Invalid or expired reset token",
-            )
+            ) from e
         elif "not found" in error_msg.lower():
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="User not found",
-            )
+            ) from e
         else:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=error_msg,
-            )
+            ) from e
 
     return PasswordResetResponse(message="Password has been reset successfully")
 
 
-@router.post("/change-password", response_model=PasswordResetResponse, status_code=status.HTTP_200_OK)
+@router.post(
+    "/change-password", response_model=PasswordResetResponse, status_code=status.HTTP_200_OK
+)
 async def change_password_endpoint(
     change_password_data: ChangePasswordRequest,
     current_user: User = Depends(get_current_user),
@@ -254,7 +260,10 @@ async def change_password_endpoint(
     """
     try:
         await change_password(
-            db, current_user.id, change_password_data.old_password, change_password_data.new_password
+            db,
+            current_user.id,
+            change_password_data.old_password,
+            change_password_data.new_password,
         )
     except ValueError as e:
         error_msg = str(e)
@@ -262,17 +271,16 @@ async def change_password_endpoint(
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Incorrect old password",
-            )
+            ) from e
         elif "not found" in error_msg.lower():
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="User not found",
-            )
+            ) from e
         else:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=error_msg,
-            )
+            ) from e
 
     return PasswordResetResponse(message="Password has been changed successfully")
-

@@ -61,4 +61,3 @@ class Permission(Base):
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
 
     roles = relationship("Role", secondary=roles_permissions, back_populates="permissions")
-

@@ -88,4 +88,3 @@ class PasswordResetResponse(BaseModel):
     """
 
     message: str
-

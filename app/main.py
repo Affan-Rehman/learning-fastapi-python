@@ -9,12 +9,10 @@ from fastapi.responses import JSONResponse
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.db.session import get_db
-
 from app.auth.router import router as auth_router
 from app.core.config import settings
 from app.core.rate_limit import setup_rate_limiting
-from app.db.session import engine
+from app.db.session import engine, get_db
 from app.mail.router import router as mail_router
 from app.rbac.router import router as rbac_router
 from app.rbac.schemas import (

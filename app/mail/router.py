@@ -1,4 +1,13 @@
-from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, HTTPException, UploadFile, status
+from fastapi import (
+    APIRouter,
+    BackgroundTasks,
+    Depends,
+    File,
+    Form,
+    HTTPException,
+    UploadFile,
+    status,
+)
 from fastapi.responses import JSONResponse
 from fastapi_mail import MessageSchema, MessageType
 from starlette.requests import Request
@@ -9,14 +18,12 @@ from app.mail.schemas import (
     BulkEmailSchema,
     EmailMultipartSchema,
     EmailSchema,
-    EmailWithAttachmentSchema,
     EmailWithTemplateSchema,
 )
 from app.mail.service import (
     send_bulk_emails,
     send_email,
     send_email_background,
-    send_email_with_attachments,
     send_email_with_template,
     send_multipart_email,
 )
@@ -44,7 +51,11 @@ async def send_email_endpoint(
         JSON response with success message
     """
     try:
-        html_body = email_data.body.get("html", "<p>Hi, thanks for using Fastapi-mail</p>") if email_data.body else "<p>Hi, thanks for using Fastapi-mail</p>"
+        html_body = (
+            email_data.body.get("html", "<p>Hi, thanks for using Fastapi-mail</p>")
+            if email_data.body
+            else "<p>Hi, thanks for using Fastapi-mail</p>"
+        )
         await send_email(
             recipients=email_data.email,
             subject="Fastapi-Mail module",
@@ -56,7 +67,7 @@ async def send_email_endpoint(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to send email: {str(e)}",
-        )
+        ) from e
 
 
 @router.post("/email/background", status_code=status.HTTP_200_OK)
@@ -79,7 +90,11 @@ async def send_email_background_endpoint(
         JSON response with success message
     """
     try:
-        body = email_data.body.get("text", "Simple background task") if email_data.body else "Simple background task"
+        body = (
+            email_data.body.get("text", "Simple background task")
+            if email_data.body
+            else "Simple background task"
+        )
         await send_email_background(
             background_tasks=background_tasks,
             recipients=email_data.email,
@@ -92,7 +107,7 @@ async def send_email_background_endpoint(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to send email: {str(e)}",
-        )
+        ) from e
 
 
 @router.post("/email/template", status_code=status.HTTP_200_OK)
@@ -124,7 +139,7 @@ async def send_email_template_endpoint(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to send email: {str(e)}",
-        )
+        ) from e
 
 
 @router.post("/email/attachment", status_code=status.HTTP_200_OK)
@@ -162,7 +177,7 @@ async def send_email_attachment_endpoint(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to send email: {str(e)}",
-        )
+        ) from e
 
 
 @router.post("/email/multipart", status_code=status.HTTP_200_OK)
@@ -194,7 +209,7 @@ async def send_email_multipart_endpoint(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to send email: {str(e)}",
-        )
+        ) from e
 
 
 @router.post("/email/bulk", status_code=status.HTTP_200_OK)
@@ -217,7 +232,11 @@ async def send_email_bulk_endpoint(
     try:
         messages = []
         for email_item in email_data.emails:
-            body = email_item.body.get("html", "<p>Bulk email</p>") if email_item.body else "<p>Bulk email</p>"
+            body = (
+                email_item.body.get("html", "<p>Bulk email</p>")
+                if email_item.body
+                else "<p>Bulk email</p>"
+            )
             message = MessageSchema(
                 subject="Fastapi-Mail module",
                 recipients=email_item.email,
@@ -232,5 +251,4 @@ async def send_email_bulk_endpoint(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to send emails: {str(e)}",
-        )
-
+        ) from e
